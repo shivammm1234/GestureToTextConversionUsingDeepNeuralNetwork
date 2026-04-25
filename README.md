@@ -1,6 +1,6 @@
-# 🤟 GestureLink: Real-Time Dual-Hand Sign Language Translator
+# 🤟 Gesture to Text Conversion Using Deep Neural Network
 
-**GestureLink** is a state-of-the-art Sign Language to Text conversion system that bridges the communication gap using deep learning. It leverages **MediaPipe** for high-fidelity hand tracking, a custom **CNN-LSTM** architecture for temporal gesture recognition, and a specialized **NLP Grammar Engine** to generate coherent natural language sentences from sequence predictions.
+**GestureLink** is a real-time Sign Language to Text conversion system that bridges the communication gap using deep learning. It leverages **MediaPipe** for high-fidelity hand tracking, a custom **CNN-LSTM** architecture for temporal gesture recognition, and a specialized **NLP Grammar Engine** to generate coherent natural language sentences.
 
 ![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.15+-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
@@ -11,83 +11,108 @@
 
 ## 🚀 Key Features
 
-- **👐 Dual-Hand Recognition**: Tracks both hands simultaneously (42 landmarks, 126 features) for complex gesture support.
-- **🧠 Hybrid CNN-LSTM Model**: Combines spatial feature extraction (1D-CNN) with temporal sequence modeling (Stacked LSTM).
-- **📝 NLP Grammar Engine**: Automatically transforms raw gesture labels (e.g., "mother help dog") into grammatical English ("Mother helps a dog.").
-- **⚡ Real-Time Inference**: Low-latency prediction via Streamlit with adjustable confidence thresholds.
-- **📊 56 Gesture Classes**: Trained on a diverse vocabulary including verbs, nouns, and conversational phrases.
-- **☁️ Cloud-Ready Pipeline**: Includes a complete Google Colab automation script for high-speed GPU training.
+*   👐 **Dual-Hand Recognition** – Tracks both hands simultaneously (42 landmarks, 126 features)
+*   🧠 **Hybrid CNN-LSTM Model** – Combines spatial (CNN) and temporal (LSTM) learning
+*   📝 **NLP Grammar Engine** – Converts raw gesture sequences into meaningful grammatical sentences
+*   ⚡ **Real-Time Inference** – Ultra-low latency predictions mirrored in a Streamlit UI
+*   📊 **56 Gesture Classes** – Extensive vocabulary covering verbs, nouns, and everyday phrases
+*   ☁️ **Colab Training Pipeline** – Fully automated GPU-ready training via Jupyter notebooks
+
+---
+
+## 🌍 Why This Project Matters
+
+This system helps bridge the communication gap between deaf/mute individuals and the hearing community by enabling real-time gesture-to-text translation using state-of-the-art AI. It promotes inclusivity and independent communication.
 
 ---
 
 ## 🏗️ System Architecture
 
-The project follows a modular pipeline designed for scalability and performance:
-
 ```mermaid
 graph TD
-    A[Webcam Feed] --> B[MediaPipe Landmark Extraction]
+    subgraph Input_Processing [Input Processing]
+    A[Webcam Feed] --> B[MediaPipe Hands Detection]
     B --> C{Hands Detected?}
-    C -- Yes --> D[Dual-Hand Landmark Buffer - 30 Frames]
-    C -- No --> E[Zero Padding / Reset]
-    D --> F[CNN-LSTM Inference Engine]
-    F --> G[Gesture Word Prediction]
-    G --> H[NLP Grammar Module]
-    H --> I[Grammatical Sentence Output]
-    I --> J[Streamlit UI Display]
+    C -- No --> E[Zero-Padding Landmarks]
+    C -- Yes --> F[Extract 42 Landmark Coords]
+    E --> G[Sliding window - 30 Frames]
+    F --> G
+    end
+
+    subgraph Deep_Learning_Model [Inference Engine]
+    G --> H["CNN-LSTM Model (Spatial + Temporal)"]
+    H --> I[Softmax Classification]
+    I --> J[Predicted Gesture Word]
+    end
+
+    subgraph Natural_Language_Processing [Post-Processing]
+    J --> K[Gesture Word Accumulator]
+    K --> L[NLP Grammar Module]
+    L --> M[Grammatical English Sentence]
+    end
+
+    M --> N[Streamlit App Interface]
+
+    style Input_Processing fill:#f9f,stroke:#333,stroke-width:2px
+    style Deep_Learning_Model fill:#bbf,stroke:#333,stroke-width:2px
+    style Natural_Language_Processing fill:#bfb,stroke:#333,stroke-width:2px
 ```
-
-### 1. Data Processing (MediaPipe)
-- Extends the standard single-hand tracking to **Dual-Hand support**.
-- Extracts `(x, y, z)` coordinates for 21 landmarks per hand.
-- Zero-pads missing hands to maintain a constant input shape of `(30, 126)`.
-
-### 2. Deep Learning Model (CNN-LSTM)
-- **Spatial Layer**: `TimeDistributed Conv1D` filters extract local landmark relationships per frame.
-- **Temporal Layer**: Stacked `LSTM` units capture the motion dynamics of the gesture over time.
-- **Classification Head**: Softmax layer predicts across 56 distinct gesture labels.
-
-### 3. NLP Sentence Builder
-- Utilizes **Part-of-Speech (POS)** tagging and rule-based logic.
-- Handles **Verb Conjugation** (e.g., 3rd person singular 's').
-- Implements **Article Insertion** (e.g., 'the', 'a') and **Deduplication** of repeated gestures.
 
 ---
 
 ## 📁 Repository Structure
 
+```text
+GestureToTextConversion/
+├── app.py                  # Main Streamlit application
+├── nlp_module.py           # NLP grammar engine logic
+├── model_architecture.py   # CNN-LSTM model definition
+├── config.py               # Hyperparameters and settings
+├── train.py                # Model training script
+├── augment_data.py         # Advanced data augmentation
+├── data_preprocessing.py   # Landmark extraction tool
+├── colab_training.py       # Standalone training for Colab
+├── create_notebook.py      # Script to generate Jupyter notebooks
+├── requirements.txt        # Required dependencies
+├── preprocessed_data/      # Label encoder and class names
+├── models/                 # Model storage (ignored by git)
+└── evaluation_results/     # Performance metrics and plots
 ```
-NewMajorProject/
-├── app.py                 # Streamlit Real-Time Application
-├── nlp_module.py          # Rule-Based Grammar Engine
-├── model_architecture.py  # CNN-LSTM Keras Definition
-├── config.py              # Hyperparameters & Path Settings
-├── train.py               # Local Training Pipeline
-├── augment_data.py        # 8-Method Data Augmentation System
-├── data_preprocessing.py  # MediaPipe Feature Extractor
-├── create_notebook.py     # Colab Notebook Generator (.ipynb)
-├── colab_training.py      # Standalone Colab Execution Script
-├── requirements.txt       # Project Dependencies
-├── dataset/               # Raw Gesture Videos (56 Classes)
-├── models/                # Trained .h5 and .keras Models
-└── evaluation_results/    # Accuracy Plots & Metrics
+
+---
+
+## 📦 Dataset
+
+The dataset is not included in this repository due to its large size. You can:
+*   Collect your own gesture videos using the extraction scripts provided.
+*   Link your own Google Drive dataset to the Colab notebook.
+
+---
+
+## 📥 Pretrained Model
+
+Since model files are large, they are stored externally.
+👉 **[Download Trained Model Here](YOUR_LINK_HERE)**
+
+Place the downloaded files inside the `models/` directory:
+```
+models/gesture_model.h5
 ```
 
 ---
 
 ## 🛠️ Installation & Setup
 
-### Local Environment
-1. **Clone the repository**:
+1. **Clone the repo**:
    ```bash
-   git clone https://github.com/yourusername/GestureLink.git
-   cd GestureLink
+   git clone https://github.com/shivammm1234/GestureToTextConversionUsingDeepNeuralNetwork.git
+   cd GestureToTextConversionUsingDeepNeuralNetwork
    ```
-2. **Create a virtual environment**:
+2. **Setup virtual environment**:
    ```bash
    python -m venv venv
-   venv\Scripts\activate  # Windows
-   # source venv/bin/activate # Linux/Mac
+   venv\Scripts\activate   # Windows
+   # source venv/bin/activate   # Linux/Mac
    ```
 3. **Install dependencies**:
    ```bash
@@ -96,83 +121,58 @@ NewMajorProject/
 
 ---
 
-## ☁️ Training on Google Colab (Recommended)
+## ☁️ Training (Google Colab)
 
-Since training deep LSTM models is GPU-intensive, it is best to use Google Colab:
-
-1. **Upload** the project folder to your Google Drive.
-2. **Open the Notebook**: Use [Sign_Language_CNN_LSTM_NLP.ipynb](file:///d:/NewMajorProject%2023MArch/Sign_Language_CNN_LSTM_NLP.ipynb) directly in Colab.
-3. **Configure GPU**: Set Runtime to **T4 GPU** in Colab settings.
-4. **Execute**: Run all cells to perform Preprocessing, Augmentation, Training, and Evaluation.
-5. **Download Outputs**: After training, download `gesture_model.h5` and `label_encoder.pkl` to your local `models/` folder.
-
-> [!TIP]
-> You can also use `create_notebook.py` to regenerate the notebook from scratch if you modify the underlying scripts.
+1. Upload this project folder to Google Drive.
+2. Open `Sign_Language_CNN_LSTM_NLP.ipynb` in Google Colab.
+3. Enable GPU (Runtime → Change runtime type → T4 GPU).
+4. Run all cells sequentially to train and evaluate.
 
 ---
 
-## 🖥️ Running the Application
+## 🖥️ Run the Application
 
-Launch the real-time translation interface:
-
+Launch the real-time Streamlit interface:
 ```bash
 streamlit run app.py
 ```
 
-### **Usage Tips:**
-- **Lighting**: Ensure your hands are well-lit for accurate MediaPipe tracking.
-- **Dual-Hands**: Some gestures require both hands; keep both within the frame.
-- **Editing**: You can manually edit the word buffer in the UI before finalizing a sentence.
-- **Cooldown**: Use the sidebar to adjust prediction speed if the model is too sensitive.
+### Usage Tips:
+*   **Lighting**: Ensure the background is well-lit.
+*   **Distance**: Keep your hands within the camera frame.
+*   **Gestures**: Use both hands for dual-hand signs.
+*   **Cooldown**: Adjust prediction timing in the sidebar settings.
 
 ---
 
-## 📊 Model Evaluation & Metrics
+## 📊 Model Performance
 
-| Metric | Score / Value |
-|:---|:---|
-| **Gestures** | 56 Distinct Classes |
-| **Accuracy** | ~94% (Mean across classes) |
-| **Architecture** | Hybrid CNN + LSTM |
-| **Input Shape** | 30 Frames × 126 Landmarks |
-| **Features** | Dual-Hand Tracking (42 XYZ points) |
-| **Augmentation** | 8 Methods (5x-20x factor) |
-
-### 🛠️ Troubleshooting
-
-| Issue | Resolution |
-|:---|:---|
-| **No Webcam** | Check browser permissions or try another USB port. |
-| **Low Accuracy** | Ensure proper lighting and that hands are clearly visible in the frame. |
-| **Memory Error** | Reduce `BATCH_SIZE` in `config.py` (e.g., set it to 8). |
-| **Model Not Found** | Ensure `gesture_model.h5` is in the `models/` folder. |
-| **Import Errors** | Verify you are using the virtual environment (`venv`). |
+| Metric      | Value      |
+| ----------- | ---------- |
+| **Accuracy** | ~94%       |
+| **Classes**  | 56 Gestures |
+| **Input**    | 30 Frames × 126 Features |
+| **Model**    | CNN (Spatial) + LSTM (Temporal) |
 
 ---
 
-## 🎯 Recognized Gestures (56 Classes)
+## 🛠️ Troubleshooting
 
-<details>
-<summary>Click to view all supported gestures</summary>
-
-```text
-all, book, can, computer, cool, deaf, dog, drink, family, fine,
-finish, go, hearing, help, language, later, like, many, mother, no,
-now, saw, scream, sea, shout, singer, skip, sofa, solve, something,
-talent, telescope, tempt, tend, text, than, therefore, thrill,
-towel, truth, turn, tv, unique, upstairs, vacant, very, walk,
-water, waterfall, wheelchair, weigh, what, who, woman, yes
-```
-</details>
+| Issue | Solution |
+| :--- | :--- |
+| Webcam not working | Ensure browser has camera permissions. |
+| Low accuracy | Improve lighting or retrain with more data. |
+| Memory error | Reduce `BATCH_SIZE` in `config.py`. |
+| Model not found | Verify `models/gesture_model.h5` exists. |
 
 ---
 
+## 🙏 Acknowledgments
+
+*   **Google MediaPipe** for robust hand tracking.
+*   **TensorFlow/Keras** for deep learning frameworks.
+*   **Streamlit** for the intuitive web interface.
+
 ---
 
-## 📜 License & Acknowledgments
-
-- Developed as a **Major Project** for academic research.
-- Powered by **Google MediaPipe**, **TensorFlow**, and **Streamlit**.
-
----
 <p align="center">Made with ❤️ for Accessible Technology</p>
