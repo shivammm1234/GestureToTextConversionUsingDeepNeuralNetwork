@@ -1,0 +1,40 @@
+# Virtual Environment
+venv/
+.env
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data & Large Media
+dataset/
+raw/
+augmented_data/
+preprocessed_data/*.npy
+
+# Models
+models/checkpoint/
+*.h5
+*.keras
+*.pt
+*.pth
+
+# IDE Settings
+.vscode/
+.idea/
+
+# Logs & temp
+*.log
+
+# Evaluation results (keep folder, not files)
+evaluation_results/*
+!evaluation_results/
+!evaluation_results/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db

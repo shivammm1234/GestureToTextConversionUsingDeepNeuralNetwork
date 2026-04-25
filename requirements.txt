@@ -1,0 +1,24 @@
+# =============================================================================
+# Requirements — Gesture-to-Text Conversion System (STABLE)
+# =============================================================================
+
+# Core ML/DL
+tensorflow==2.15.0
+numpy==1.26.4
+
+# MediaPipe
+mediapipe==0.10.14
+protobuf==3.20.3
+
+# Computer Vision (ONLY ONE)
+opencv-python==4.9.0.80
+
+# Visualization
+matplotlib==3.8.4
+seaborn==0.13.2
+
+# Web App
+streamlit==1.32.0
+
+# ML utilities
+scikit-learn==1.4.2
