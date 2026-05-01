@@ -9,7 +9,7 @@
 
 ---
 
-## 🚀 Key Features
+## 🚀 Key Features:
 
 *   👐 **Dual-Hand Recognition** – Tracks both hands simultaneously (42 landmarks, 126 features)
 *   🧠 **Hybrid CNN-LSTM Model** – Combines spatial (CNN) and temporal (LSTM) learning
