@@ -165,13 +165,6 @@ streamlit run app.py
 | Memory error | Reduce `BATCH_SIZE` in `config.py`. |
 | Model not found | Verify `models/gesture_model.h5` exists. |
 
----
-
-## 🙏 Acknowledgments
-
-*   **Google MediaPipe** for robust hand tracking.
-*   **TensorFlow/Keras** for deep learning frameworks.
-*   **Streamlit** for the intuitive web interface.
 
 ---
 
